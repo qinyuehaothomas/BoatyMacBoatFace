@@ -23,7 +23,7 @@ function pHConversion (AnalogReading: number) {
 function WaterTempConverter (AnalogReading: number) {
     V = AnalogReading * 3 / 1024
     // Temperature= 1177692.5 / (3950 + 298.15 * ln(V/(3.3-V)) - 273.5.
-    return 1177692.5 / (3950 + 298.15 * (Math.log(V/(3-V)) / Math.log(Math.E))) - 223.15
+    return 1177692.5 / (3950 + 298.15 * (Math.log(V/(3-V)) / Math.log(Math.E))) - 253.15
 }
 // TODO: Just For Tuning
 function SerialTuning () {
@@ -74,7 +74,7 @@ function ReadLightIntensity(lightintensitypin: AnalogPin): number {
     return Math.round(lightintensity)
 }
 let Reference_VOLTAGE = 3100
-function ReadTemperature(CorF: string, temppin: AnalogPin): number {
+function ReadTemperature( temppin: AnalogPin): number {
     let voltage2 = 0;
     let Temperature = 0;
     pins.digitalWritePin(DigitalPin.P0, 0)
@@ -87,29 +87,20 @@ function ReadTemperature(CorF: string, temppin: AnalogPin): number {
     );
     Temperature = (voltage2 - 500) / 10;
 
-    switch (CorF) {
-        case "F":
-            return Math.round(Temperature)
-            break;
-        case "C":
-            return Math.round(Temperature * 9 / 5 + 32)
-            break;
-        default:
-            return 0
-    }
+    return Math.round(Temperature)
 }
 BoatID = 925
 let WifiConnected=false
-// SerialTuning()
 basic.forever(function () {
+    // if (!WifiConnected) {
+    //     WifiConnected = InitWIFI("Redmi 9T", "87654321")
+    // }
     // pH conversion Table:
     // https://raw.githubusercontent.com/DFRobot/DFRobotMediaWikiImage/master/Image/Ph-mv.jpg
     pH = pHConversion(pins.analogReadPin(AnalogPin.P1))
-    SurroundingTemperature = ReadTemperature("C", AnalogPin.P2)
-Light = ReadLightIntensity(AnalogPin.P3)
-WaterTemperature = WaterTempConverter(pins.analogReadPin(AnalogPin.P4))
-    FormattedRequest()
-    if (!WifiConnected){
-        WifiConnected=InitWIFI("Redmi 9T","87654321")
-    }
+    SurroundingTemperature = ReadTemperature(AnalogPin.P2)
+    Light = ReadLightIntensity(AnalogPin.P3)
+    WaterTemperature = WaterTempConverter(pins.analogReadPin(AnalogPin.P4))
+    SerialTuning()
+    // FormattedRequest()
 })
