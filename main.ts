@@ -19,7 +19,7 @@ function InitWIFI (SSID: string, Pswd: string) {
 function pHConversion (AnalogReading: number) {
     return Math.round(14 - (AnalogReading * (5 / 1023) * -4.8 + 17))
 }
-// TODO: Do Me & Wesley's Efforts of Tuning That Fucking Sensor Glory
+// TODO: Do Me & Wesley's Efforts of Tuning That Sensor Glory
 function WaterTempConverter (AnalogReading: number) {
     V = AnalogReading * 3 / 1024
     // Temperature= 1177692.5 / (3950 + 298.15 * ln(V/(3.3-V)) - 273.5.
@@ -32,7 +32,7 @@ function SerialTuning () {
     serial.writeValue("Light", Light)
     serial.writeValue("Temp(℃)", SurroundingTemperature)
 }
-// TODO: Send All Shit
+// TODO: Send everything
 function FormattedRequest () {
     esp8266.uploadThingspeak(
     "KTANII17SM9PCOI2",
@@ -54,12 +54,13 @@ function FormattedRequest () {
             `)
     }
 }
+let WifiConnected = false
 let WaterTemperature = 0
 let pH = 0
 let BoatID = 0
-let Light = 0
-let V = 0
 let SurroundingTemperature = 0
+let V = 0
+let Light = 0
 function ReadLightIntensity(lightintensitypin: AnalogPin): number {
     let voltage = 0;
     let lightintensity = 0;
@@ -90,17 +91,16 @@ function ReadTemperature( temppin: AnalogPin): number {
     return Math.round(Temperature)
 }
 BoatID = 925
-let WifiConnected=false
 basic.forever(function () {
-    if (!WifiConnected) {
+    if (!(WifiConnected)) {
         WifiConnected = InitWIFI("Redmi9T", "87654321")
     }
     // pH conversion Table:
     // https://raw.githubusercontent.com/DFRobot/DFRobotMediaWikiImage/master/Image/Ph-mv.jpg
     pH = pHConversion(pins.analogReadPin(AnalogPin.P1))
     SurroundingTemperature = ReadTemperature(AnalogPin.P2)
-    Light = ReadLightIntensity(AnalogPin.P3)
-    WaterTemperature = WaterTempConverter(pins.analogReadPin(AnalogPin.P4))
+Light = ReadLightIntensity(AnalogPin.P3)
+WaterTemperature = WaterTempConverter(pins.analogReadPin(AnalogPin.P4))
     // SerialTuning()
     FormattedRequest()
 })
