@@ -92,15 +92,15 @@ function ReadTemperature( temppin: AnalogPin): number {
 BoatID = 925
 let WifiConnected=false
 basic.forever(function () {
-    // if (!WifiConnected) {
-    //     WifiConnected = InitWIFI("Redmi 9T", "87654321")
-    // }
+    if (!WifiConnected) {
+        WifiConnected = InitWIFI("Redmi 9T", "87654321")
+    }
     // pH conversion Table:
     // https://raw.githubusercontent.com/DFRobot/DFRobotMediaWikiImage/master/Image/Ph-mv.jpg
     pH = pHConversion(pins.analogReadPin(AnalogPin.P1))
     SurroundingTemperature = ReadTemperature(AnalogPin.P2)
     Light = ReadLightIntensity(AnalogPin.P3)
     WaterTemperature = WaterTempConverter(pins.analogReadPin(AnalogPin.P4))
-    SerialTuning()
-    // FormattedRequest()
+    // SerialTuning()
+    FormattedRequest()
 })
