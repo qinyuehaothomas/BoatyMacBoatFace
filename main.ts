@@ -93,7 +93,7 @@ BoatID = 925
 let WifiConnected=false
 basic.forever(function () {
     if (!WifiConnected) {
-        WifiConnected = InitWIFI("Redmi 9T", "87654321")
+        WifiConnected = InitWIFI("Redmi9T", "87654321")
     }
     // pH conversion Table:
     // https://raw.githubusercontent.com/DFRobot/DFRobotMediaWikiImage/master/Image/Ph-mv.jpg
